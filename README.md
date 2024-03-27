@@ -1,18 +1,17 @@
 Assessment
 ===
 
-Implement 2 API endpoints using Gin framework and the endpoints should store and retrieve data using MongoDB.
-## Requirments
+Implement 2 API endpoints using the Gin framework, and the endpoints should store and retrieve data from MongoDB.
 
-
+## Requirements
 
 ### POST API
 
 - Send the user details such as user_id, username, password in the request body.
-- Recieve it from the backend, then insert it to a collection.
+- Receive it on the backend, then insert it into a MongoDB collection.
 
+##### Request
 
-##### request
 ```
 curl --location 'http://localhost:8080/' \
 --header 'Content-Type: application/json' \
@@ -25,12 +24,12 @@ curl --location 'http://localhost:8080/' \
 ```
 ### GET API
 
-- Retreive username as query param from the request.
-- If query is empty show all users.
-- If query exists then retrieve all the users who have the name with same prefix. 
+- Retrieve username as a query parameter from the request.
+- If the query is empty, show all users stored in the 'users' collection.
+- If the query exists, retrieve all the users whose names start with the specified prefix.
+- Give response with the retrieved user information.
 
-
-##### request
+##### Request
 
 ```
 curl --location 'http://localhost:8080?username=new'

@@ -1,19 +1,15 @@
 FROM golang:1.22.1-alpine3.19
 
-# Set destination for COPY
-WORKDIR /app
+WORKDIR /app 
 
-# Download Go modules
-COPY go.mod go.sum ./
+COPY go.mod .
+COPY go.sum .
+
 RUN go mod download
 
+COPY  . . 
 
-COPY . ./
-
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /main
+RUN go build -v -o ./ ./cmd/main.go
 
 EXPOSE 8080
-
-# Run
-CMD ["/main"]
+CMD [ "./main" ]

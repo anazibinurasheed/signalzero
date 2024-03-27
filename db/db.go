@@ -1,9 +1,10 @@
-package main
+package db
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"signalzero/models"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -33,18 +34,18 @@ func init() {
 	userCollection = client.Database(DBName).Collection(Collection)
 }
 
-func InsertOne(ctx context.Context, args User) error {
+func InsertOne(ctx context.Context, args models.User) error {
 	res, err := userCollection.InsertOne(ctx, args)
 	if err != nil {
 		log.Println("failed to insert:", err)
 		return err
 	}
-	
+
 	fmt.Println("inserted id :", res.InsertedID)
 	return nil
 }
 
-func FetchUsers(ctx context.Context, query string) ([]User, error) {
+func FetchUsers(ctx context.Context, query string) ([]models.User, error) {
 
 	filter := bson.D{}
 	if query == "" {
@@ -62,10 +63,10 @@ func FetchUsers(ctx context.Context, query string) ([]User, error) {
 	}
 
 	defer cur.Close(ctx)
-	users := []User{}
+	users := []models.User{}
 
 	for cur.Next(ctx) {
-		result := User{}
+		result := models.User{}
 
 		err = cur.Decode(&result)
 		if err != nil {

@@ -1,27 +1,20 @@
-package main
+package handlers
 
 import (
 	"context"
 	"net/http"
+	"signalzero/db"
+	"signalzero/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
-
-	router := gin.New()
-
-	handle := &handler{}
-
-	router.GET("/", handle.GetUsers)
-	router.POST("/", handle.AddUsers)
-
-	router.Run(":8080")
-
+type handler struct {
 }
 
-type handler struct {
+func New() *handler {
+	return &handler{}
 }
 
 func (h *handler) GetUsers(c *gin.Context) {
@@ -30,7 +23,7 @@ func (h *handler) GetUsers(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
 	defer cancel()
 
-	users, err := FetchUsers(ctx, query)
+	users, err := db.FetchUsers(ctx, query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": http.StatusInternalServerError,
@@ -47,8 +40,10 @@ func (h *handler) GetUsers(c *gin.Context) {
 	})
 }
 
+
+
 func (h *handler) AddUsers(c *gin.Context) {
-	body := User{}
+	body := models.User{}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -61,7 +56,7 @@ func (h *handler) AddUsers(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c, 10*time.Second)
 	defer cancel()
 
-	err := InsertOne(ctx, body)
+	err := db.InsertOne(ctx, body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status": http.StatusInternalServerError,
